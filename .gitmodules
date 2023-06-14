@@ -1,0 +1,3 @@
+[submodule "next13-submodule"]
+	path = lib/next13-submodule
+	url = https://github.com/minchodang/next13-submodule.git
