@@ -1,35 +1,15 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 1.레포 목적
+## 1) next13 학습. 
+이제 next13이 메이저로 올라온 만큼 app-router 등의 학습을 위해 연습중입니다. 
 
-## Getting Started
+## 2) hydration 및 cache 관련 학습. 
+프론트 개발자의 최적화의 숙명인 cache 기능 구현과 더불어, hydration + react-query 역시 코드로 직접 구현해 보면서 익힙니다. 
 
-First, run the development server:
+## 3) submodule 활용. 
+추후 공용 api나 훅스들은 submodule을 활용하는 것을 고려해 서브모듈 적용해 레포 구성했습니다. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+추가적인 부분은 계속 업데이트 될 예정입니다. 
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# next13Practice
+감사합니다. 
