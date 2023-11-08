@@ -2,11 +2,12 @@ import styled from '@emotion/styled';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import QueryKeys from '../../lib/next13-submodule/hooks/Querykey';
+
+import QueryKeys from '../../next13-submodule/hooks/Querykey';
 import {
     fetchPictures,
     useGetPicturesQuery,
-} from '../../lib/next13-submodule/hooks/useGetPicturesQuery';
+} from '../../next13-submodule/hooks/useGetPicturesQuery';
 
 const Container = styled.div`
     display: flex;
