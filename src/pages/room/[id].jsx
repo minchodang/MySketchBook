@@ -50,14 +50,20 @@ const Room = () => {
     const handleRoomJoined = () => {
         navigator.mediaDevices
             .getUserMedia({
-                audio: true,
+                audio: {
+                    noiseSuppression,
+                    autoGainControl,
+                    echoCancellation,
+                },
                 video: { width: 500, height: 500 },
             })
             .then((stream) => {
                 userStreamRef.current = stream;
-                userVideoRef.current.srcObject = stream;
+                const videoTracks = stream.getVideoTracks();
+                userVideoRef.current.srcObject = new MediaStream(videoTracks);
                 userVideoRef.current.onloadedmetadata = () => {
                     userVideoRef.current.play();
+                    setIsLoading(false);
                 };
                 socketRef.current.emit('ready', roomName);
             })
@@ -218,8 +224,8 @@ const Room = () => {
     return (
         <div>
             {isLoading ? <div>로딩중...</div> : null}
-            <video autoPlay ref={userVideoRef} />
-            <video autoPlay ref={peerVideoRef} />
+            <video autoPlay ref={userVideoRef} muted playsInline />
+            <video autoPlay ref={peerVideoRef} playsInline />
             <button onClick={toggleMic} type="button">
                 {micActive ? 'Mute Mic' : 'UnMute Mic'}
             </button>
