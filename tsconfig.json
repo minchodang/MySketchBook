@@ -32,6 +32,6 @@
         "src/hooks/[id].tsx",
         "src/pages/api/socket.ts",
         "src/hooks/useSocket.ts"
-    ],
+, "src/pages/room/[id].jsx"    ],
     "exclude": ["node_modules"]
 }
