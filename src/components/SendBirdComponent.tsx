@@ -16,8 +16,8 @@ const dialParams: DialParams = {
     userId: 'mstest2',
     isVideoCall: true,
     callOption: {
-        localMediaView: document.getElementById('local_video_element_id'),
-        remoteMediaView: document.getElementById('remote_video_element_id'),
+        localMediaView: document.getElementById('local_video_element_id') as HTMLMediaElement,
+        remoteMediaView: document.getElementById('remote_video_element_id') as HTMLMediaElement,
         audioEnabled: true,
         videoEnabled: true,
     },
@@ -49,8 +49,12 @@ const SendbirdComponent = () => {
             if (error) {
                 console.log(error, '에러!');
             }
-            call?.setLocalMediaView(document.getElementById('local_video_element_id'));
-            call?.setRemoteMediaView(document.getElementById('remote_video_element_id'));
+            call?.setLocalMediaView(
+                document.getElementById('local_video_element_id') as HTMLMediaElement,
+            );
+            call?.setRemoteMediaView(
+                document.getElementById('remote_video_element_id') as HTMLMediaElement,
+            );
         });
     }, []);
 
