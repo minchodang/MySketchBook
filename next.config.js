@@ -8,14 +8,14 @@ const nextConfig = {
         domains: ['images.unsplash.com'],
         minimumCacheTTL: 60,
     },
-    // rewrites: () => {
-    //     return [
-    //         {
-    //             source: '/api/:path*',
-    //             destination: 'https://api.unsplash.com/:path*',
-    //         },
-    //     ];
-    // },
+    rewrites: () => {
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'https://api.unsplash.com/:path*',
+            },
+        ];
+    },
 };
 
 module.exports = nextConfig;

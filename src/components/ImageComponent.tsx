@@ -1,12 +1,5 @@
-import { useSuspenseQuery } from '@suspensive/react-query';
-import router from 'next/router';
-import QueryKeys from '../../next13-submodule/hooks/Querykey';
-import {
-    PicturesIndividualType,
-    fetchPicture,
-} from '../../next13-submodule/hooks/useGetPictureQuery';
 import Image from 'next/image';
-import { Suspense } from 'react';
+import { PicturesIndividualType } from '../../lib/hooks/useGetPictureQuery';
 
 interface ImageComponentProps {
     data: PicturesIndividualType;
