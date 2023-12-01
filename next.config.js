@@ -11,7 +11,7 @@ const nextConfig = {
     rewrites: () => {
         return [
             {
-                source: '/api/:path*',
+                source: '/photo/:path*',
                 destination: 'https://api.unsplash.com/:path*',
             },
         ];
