@@ -36,7 +36,7 @@ next-env.d.ts
 
 
 .yarn/*
-!.yarn/cache // Zero-Install 
+!.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
