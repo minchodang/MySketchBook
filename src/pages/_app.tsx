@@ -1,3 +1,4 @@
+import { Stack } from '@/utils/stackflow';
 import { DehydratedState, Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -17,6 +18,7 @@ export default function App({
             <QueryClientProvider client={queryClient}>
                 <Hydrate state={pageProps.dehydratedState}>
                     <Component {...pageProps} />
+                    <Stack />
                 </Hydrate>
             </QueryClientProvider>
         </>
