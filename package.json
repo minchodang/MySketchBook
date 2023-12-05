@@ -6,7 +6,10 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "lint-staged": "lint-staged",
+        "postinstall": "husky install",
+        "install": "yarn install && postinstall"
     },
     "dependencies": {
         "@emotion/react": "^11.11.1",
@@ -39,6 +42,8 @@
     "devDependencies": {
         "@tanstack/react-query": "^4.29.25",
         "@testing-library/jest-dom": "^6.1.5",
+        "husky": "^8.0.3",
+        "lint-staged": "^15.2.0",
         "prettier": "^2.8.8"
     },
     "packageManager": "yarn@4.0.2"
