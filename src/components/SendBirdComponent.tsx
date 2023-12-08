@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
+import styled from '@emotion/styled';
 import SendBirdCall, { DialParams } from 'sendbird-calls';
 
 const VideoContainer = styled.div`
@@ -23,6 +23,9 @@ const dialParams: DialParams = {
     },
 };
 
+const Button = styled.button``;
+const Video = styled.video``;
+
 const SendbirdComponent = () => {
     const [isAuth, setIsAuth] = useState(false);
     const originVideoRef = useRef<MutableRefObject<HTMLMediaElement>>();
@@ -40,11 +43,11 @@ const SendbirdComponent = () => {
     });
     SendBirdCall.addListener('ai-for-pet-test', {
         onRinging: (call) => {
-            //...
+            // ...
             console.log(call, 'test');
         },
     });
-    const call = useCallback(() => {
+    const onClickCallBtn = useCallback(() => {
         SendBirdCall.dial(dialParams, (call, error) => {
             if (error) {
                 console.log(error, '에러!');
@@ -72,10 +75,10 @@ const SendbirdComponent = () => {
 
     return (
         <div>
-            <button onClick={call}>통화걸기</button>
+            <Button onClick={onClickCallBtn}>통화걸기</Button>
             <VideoContainer>
-                <video id="local_video_element_id" autoPlay playsInline muted />
-                <video id="remote_video_element_id" autoPlay playsInline />
+                <Video id="local_video_element_id" autoPlay playsInline muted />
+                <Video id="remote_video_element_id" autoPlay playsInline />
             </VideoContainer>
         </div>
     );

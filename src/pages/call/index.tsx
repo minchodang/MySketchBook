@@ -1,5 +1,5 @@
-import CallComponent from '@/components/CallComponent';
 import styled from '@emotion/styled';
+import CallComponent from '@/components/CallComponent';
 
 const Container = styled.div`
     display: flex;
@@ -7,11 +7,9 @@ const Container = styled.div`
     gap: 15px;
 `;
 
-const CallPage = () => {
-    return (
-        <Container>
-            <CallComponent />
-        </Container>
-    );
-};
+const CallPage = () => (
+    <Container>
+        <CallComponent />
+    </Container>
+);
 export default CallPage;

@@ -1,5 +1,5 @@
-import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import { io } from 'socket.io-client';
 import useSocket from '../../hooks/useSocket';
 

@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { FC, useState } from 'react';
+import styled from '@emotion/styled';
 
 const Container = styled.div`
     display: flex;
@@ -87,6 +87,8 @@ const ButtonContainer = styled.div`
     }
 `;
 
+const Button = styled.button``;
+
 const WaterRecordPage: FC = () => {
     const [height, setHeight] = useState<number>(0);
 
@@ -105,8 +107,8 @@ const WaterRecordPage: FC = () => {
                 <WaterContainer height={height} />
             </WaterSection>
             <ButtonContainer>
-                <button onClick={increaseHeight}>+</button>
-                <button onClick={decreaseHeight}>-</button>
+                <Button onClick={increaseHeight}>+</Button>
+                <Button onClick={decreaseHeight}>-</Button>
             </ButtonContainer>
         </Container>
     );

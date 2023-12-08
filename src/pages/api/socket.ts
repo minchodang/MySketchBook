@@ -1,23 +1,37 @@
-import { Server, Socket } from 'socket.io';
 import { Request, Response } from 'express';
+import { Server, Socket } from 'socket.io';
+
+interface RoomMap {
+    [roomName: string]: Set<string>;
+}
+
+interface IceCandidateMessage {
+    candidate: RTCIceCandidateInit;
+    roomName: string;
+}
+
+interface OfferMessage {
+    offer: RTCSessionDescriptionInit;
+    roomName: string;
+}
+
+interface AnswerMessage {
+    answer: RTCSessionDescriptionInit;
+    roomName: string;
+}
+
+const io = new Server();
 
 const SocketHandler = (req: Request, res: Response) => {
-    if ((res.socket as any).server.io) {
-        console.log('Socket is already attached');
-        return res.end();
-    }
-
-    const io = new Server((res.socket as any).server);
-    (res.socket as any).server.io = io;
-
     io.on('connection', (socket: Socket) => {
-        console.log(`User Connected :${socket.id}`);
+        console.log(`User Connected: ${socket.id}`);
 
         socket.on('join', (roomName: string) => {
-            const rooms = (io.sockets.adapter as any).rooms;
-            const room = (rooms as any).get(roomName);
+            const { rooms } = io.sockets.adapter;
 
-            if (room === undefined) {
+            const room = rooms.get(roomName);
+
+            if (!room) {
                 socket.join(roomName);
                 socket.emit('created');
             } else if (room.size === 1) {
@@ -33,17 +47,17 @@ const SocketHandler = (req: Request, res: Response) => {
             socket.broadcast.to(roomName).emit('ready');
         });
 
-        socket.on('ice-candidate', (candidate: any, roomName: string) => {
-            console.log(candidate);
-            socket.broadcast.to(roomName).emit('ice-candidate', candidate);
+        socket.on('ice-candidate', (message: IceCandidateMessage) => {
+            console.log(message.candidate);
+            socket.broadcast.to(message.roomName).emit('ice-candidate', message.candidate);
         });
 
-        socket.on('offer', (offer: any, roomName: string) => {
-            socket.broadcast.to(roomName).emit('offer', offer);
+        socket.on('offer', (message: OfferMessage) => {
+            socket.broadcast.to(message.roomName).emit('offer', message.offer);
         });
 
-        socket.on('answer', (answer: any, roomName: string) => {
-            socket.broadcast.to(roomName).emit('answer', answer);
+        socket.on('answer', (message: AnswerMessage) => {
+            socket.broadcast.to(message.roomName).emit('answer', message.answer);
         });
 
         socket.on('leave', (roomName: string) => {
@@ -51,6 +65,7 @@ const SocketHandler = (req: Request, res: Response) => {
             socket.broadcast.to(roomName).emit('leave');
         });
     });
+
     return res.end();
 };
 
