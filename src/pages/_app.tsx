@@ -1,26 +1,28 @@
-import { Stack } from '@/utils/stackflow';
-import { DehydratedState, Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
+import {
+    DehydratedState,
+    HydrationBoundary,
+    QueryClient,
+    QueryClientProvider,
+} from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
 
-export default function App({
-    Component,
-    pageProps,
-}: AppProps<{ dehydratedState: DehydratedState }>) {
+const App = ({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedState }>) => {
     const [queryClient] = useState(() => new QueryClient());
 
     return (
         <>
             <Head>
-                <meta name={'viewport'} content={'width=device-width, initial-scale=1'} />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
             <QueryClientProvider client={queryClient}>
-                <Hydrate state={pageProps.dehydratedState}>
+                <HydrationBoundary state={pageProps.dehydratedState}>
                     <Component {...pageProps} />
-                    <Stack />
-                </Hydrate>
+                </HydrationBoundary>
             </QueryClientProvider>
         </>
     );
-}
+};
+
+export default App;

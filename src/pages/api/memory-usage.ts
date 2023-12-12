@@ -1,12 +1,14 @@
-let listItems: number[] = [];
 export class MemoryLeakFunction {
+    listItems: number[] = [];
+
     exec() {
-        for (let i = 0; i < 1_000_000; ++i) {
-            listItems.push(i);
+        for (let i = 0; i < 1_000_000; i += 1) {
+            this.listItems.push(i);
         }
     }
-    [Symbol.dispose]() {
-        listItems = [];
+
+    dispose() {
+        this.listItems = [];
         console.log('클린업!');
     }
 }
@@ -31,7 +33,7 @@ export default async function handler(
                 externalMB: memoryUsage.external / 1024 / 1024,
             });
         } finally {
-            func[Symbol.dispose]();
+            func.dispose();
         }
     } else {
         res.status(405).json({ message: 'Method Not Allowed' });

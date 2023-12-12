@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { fetchPicture, useGetPictureQuery } from '../../../lib/hooks/useGetPictureQuery';
 import QueryKeys from '../../../lib/hooks/Querykey';
+import { fetchPicture, useGetPictureQuery } from '../../../lib/hooks/useGetPictureQuery';
 
 const Container = styled.div`
     display: flex;
@@ -40,8 +40,11 @@ export async function getServerSideProps(context: { query: { id: string } }) {
     const { id } = context.query;
 
     const queryClient = new QueryClient();
-    await queryClient.prefetchQuery([QueryKeys.picture], () => {
-        fetchPicture({ id });
+    await queryClient.prefetchQuery({
+        queryKey: [QueryKeys.picture],
+        queryFn: () => {
+            fetchPicture({ id });
+        },
     });
 
     return {

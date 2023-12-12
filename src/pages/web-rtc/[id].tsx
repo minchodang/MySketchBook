@@ -1,8 +1,8 @@
-import useSocket from '@/hooks/useSocket';
-import { NextRouter, useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import styled from '@emotion/styled';
+import { NextRouter, useRouter } from 'next/router';
 import { Socket } from 'socket.io';
-import { io } from 'socket.io-client';
+
 const ICE_SERVERS = {
     iceServers: [
         {
@@ -10,25 +10,22 @@ const ICE_SERVERS = {
         },
     ],
 };
-interface Stream {
-    getTracks: () => MediaStreamTrack[];
-}
+const Video = styled.video``;
 
 const Room = () => {
-    useSocket();
-    const [micActive, setMicActive] = useState(true);
-    const [cameraActive, setCameraActive] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
+    const [micActive, setMicActive] = useState<boolean>(true);
+    const [cameraActive, setCameraActive] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const router = useRouter() as NextRouter;
-    const userVideoRef = useRef<any>(null);
-    const peerVideoRef = useRef<any>(null);
-    const rtcConnectionRef = useRef<any>(null);
-    const socketRef = useRef<any>();
-    const userStreamRef = useRef<any>();
+    const userVideoRef = useRef<HTMLVideoElement>(null);
+    const peerVideoRef = useRef<HTMLVideoElement>(null);
+    const rtcConnectionRef = useRef<RTCPeerConnection | null>(null);
+    const socketRef = useRef<Socket | null>(null);
+    const userStreamRef = useRef<MediaStream | null>(null);
     const hostRef = useRef<boolean>(false);
 
-    const { id: roomName } = router.query;
+    const { id: roomName } = router.query as { id: string };
 
     const handleRoomJoined = useCallback(() => {
         navigator.mediaDevices
@@ -49,7 +46,7 @@ const Room = () => {
                 const videoTracks = stream.getVideoTracks();
                 userVideoRef.current.srcObject = new MediaStream(videoTracks);
                 userVideoRef.current.onloadedmetadata = () => {
-                    userVideoRef.current && userVideoRef.current.play();
+                    userVideoRef.current?.play();
                 };
                 socketRef.current.emit('ready', roomName);
             })
@@ -73,7 +70,7 @@ const Room = () => {
                 userStreamRef.current = stream;
                 userVideoRef.current.srcObject = stream;
                 userVideoRef.current.onloadedmetadata = () => {
-                    userVideoRef.current && userVideoRef.current.play();
+                    userVideoRef.current?.play();
                     setIsLoading(false);
                 };
             })
@@ -96,16 +93,15 @@ const Room = () => {
         }
     }, [roomName]);
 
-    const onPeerLeave = () => {
+    const onPeerLeave = useCallback(() => {
         // This person is now the creator because they are the only person in the room.
         hostRef.current = true;
         if (!peerVideoRef.current) {
             return;
         }
         if (peerVideoRef.current.srcObject) {
-            peerVideoRef.current.srcObject
-                .getTracks()
-                .forEach((track: { stop: () => any }) => track.stop()); // Stops receiving all track of Peer.
+            const peerVideoStream = peerVideoRef.current.srcObject as MediaStream;
+            peerVideoStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
         }
 
         // Safely closes the existing connection established with the peer who left.
@@ -115,20 +111,30 @@ const Room = () => {
             rtcConnectionRef.current.close();
             rtcConnectionRef.current = null;
         }
-    };
-
-    const handleAnswer = (answer: any) => {
-        rtcConnectionRef.current.setRemoteDescription(answer).catch((err: any) => console.log(err));
-    };
+    }, []);
+    const handleAnswer = useCallback((answer: RTCSessionDescriptionInit) => {
+        if (rtcConnectionRef.current)
+            rtcConnectionRef.current
+                .setRemoteDescription(answer)
+                .catch((err: Error) => console.log(err));
+    }, []);
 
     const handleICECandidateEvent = useCallback(
-        (event: { candidate: any }) => {
+        (event: RTCPeerConnectionIceEvent) => {
             if (event.candidate) {
-                socketRef.current.emit('ice-candidate', event.candidate, roomName);
+                socketRef.current?.emit('ice-candidate', event.candidate, roomName);
             }
         },
         [roomName],
     );
+
+    const handleTrackEvent = useCallback((event: RTCTrackEvent) => {
+        if (!peerVideoRef.current) {
+            return;
+        }
+        const [stream] = event.streams;
+        peerVideoRef.current.srcObject = stream;
+    }, []);
 
     const createPeerConnection = useCallback(() => {
         // We create a RTC Peer Connection
@@ -138,9 +144,9 @@ const Room = () => {
         connection.onicecandidate = handleICECandidateEvent;
 
         // We implement our onTrack method for when we receive tracks
-        connection.ontrack = handleTrackEvent as any;
+        connection.ontrack = handleTrackEvent;
         return connection;
-    }, [handleICECandidateEvent]);
+    }, [handleICECandidateEvent, handleTrackEvent]);
 
     const initiateCall = useCallback(() => {
         if (!userStreamRef.current) {
@@ -149,20 +155,23 @@ const Room = () => {
         rtcConnectionRef.current = createPeerConnection();
 
         const tracks = userStreamRef.current.getTracks();
-        tracks.forEach((track: any) => {
+        tracks.forEach((track: MediaStreamTrack) => {
             if (!rtcConnectionRef.current) {
                 return;
             }
-            userStreamRef.current &&
-                rtcConnectionRef.current.addTrack(track, userStreamRef.current);
+
+            if (!userStreamRef.current) {
+                return;
+            }
+            rtcConnectionRef.current.addTrack(track, userStreamRef.current);
         });
 
         createAndSendOffer();
     }, [createAndSendOffer, createPeerConnection]);
 
     const handleReceivedOffer = useCallback(
-        (offer: any) => {
-            if (!hostRef.current) {
+        (offer: RTCSessionDescriptionInit) => {
+            if (!hostRef.current && userStreamRef.current) {
                 rtcConnectionRef.current = createPeerConnection();
                 rtcConnectionRef.current.addTrack(
                     userStreamRef.current.getTracks()[0],
@@ -176,30 +185,25 @@ const Room = () => {
 
                 rtcConnectionRef.current
                     .createAnswer()
-                    .then((answer: any) => {
-                        rtcConnectionRef.current.setLocalDescription(answer);
-                        socketRef.current.emit('answer', answer, roomName);
+                    .then((answer: RTCSessionDescriptionInit) => {
+                        rtcConnectionRef.current?.setLocalDescription(answer);
+                        socketRef.current?.emit('answer', answer, roomName);
                     })
-                    .catch((error: any) => {
+                    .catch((error: Error) => {
                         console.log(error);
                     });
             }
         },
         [createPeerConnection, roomName],
     );
-    const handlerNewIceCandidateMsg = (incoming: RTCIceCandidateInit | undefined) => {
-        // We cast the incoming candidate to RTCIceCandidate
+
+    const handlerNewIceCandidateMsg = useCallback((incoming: RTCIceCandidateInit) => {
         const candidate = new RTCIceCandidate(incoming);
-        rtcConnectionRef.current.addIceCandidate(candidate).catch((e: any) => console.log(e));
-    };
+        rtcConnectionRef.current?.addIceCandidate(candidate).catch((e: Error) => console.log(e));
+    }, []);
 
-    const handleTrackEvent = (event: { streams: any[] }) => {
-        // eslint-disable-next-line prefer-destructuring
-        peerVideoRef.current.srcObject = event.streams[0];
-    };
-
-    const toggleMediaStream = (type: string, state: boolean) => {
-        userStreamRef.current.getTracks().forEach((track: { kind: string; enabled: boolean }) => {
+    const toggleMediaStream = (type: 'audio' | 'video', state: boolean) => {
+        userStreamRef.current?.getTracks().forEach((track: MediaStreamTrack) => {
             if (track.kind === type) {
                 // eslint-disable-next-line no-param-reassign
                 track.enabled = !state;
@@ -218,59 +222,52 @@ const Room = () => {
     };
 
     const leaveRoom = () => {
-        socketRef.current.emit('leave', roomName); // Let's the server know that user has left the room.
+        socketRef.current?.emit('leave', roomName);
 
-        if (userVideoRef.current.srcObject) {
-            userVideoRef.current.srcObject
-                .getTracks()
-                .forEach((track: { stop: () => any }) => track.stop()); // Stops receiving all track of User.
+        if (userVideoRef.current?.srcObject) {
+            const userStream = userVideoRef.current.srcObject as MediaStream;
+            userStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
         }
-        if (peerVideoRef.current.srcObject) {
-            peerVideoRef.current.srcObject
-                .getTracks()
-                .forEach((track: { stop: () => any }) => track.stop()); // Stops receiving audio track of Peer.
+        if (peerVideoRef.current?.srcObject) {
+            const peerStream = peerVideoRef.current.srcObject as MediaStream;
+            peerStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
         }
 
-        // Checks if there is peer on the other side and safely closes the existing connection established with the peer.
         if (rtcConnectionRef.current) {
             rtcConnectionRef.current.ontrack = null;
             rtcConnectionRef.current.onicecandidate = null;
             rtcConnectionRef.current.close();
         }
-        // router.push('/');
     };
+
     useEffect(() => {
-        socketRef.current = io();
-        // First we join a room
-        socketRef.current.emit('join', roomName);
+        socketRef.current?.on('leave', onPeerLeave);
+        socketRef.current?.on('offer', handleReceivedOffer);
+        socketRef.current?.on('answer', handleAnswer);
+        socketRef.current?.on('ice-candidate', handlerNewIceCandidateMsg);
 
-        socketRef.current.on('joined', handleRoomJoined);
-        // If the room didn't exist, the server would emit the room was 'created'
-        socketRef.current.on('created', handleRoomCreated);
-        // Whenever the next person joins, the server emits 'ready'
-        socketRef.current.on('ready', initiateCall);
+        return () => {
+            if (!socketRef.current) {
+                return;
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            socketRef.current.disconnect();
+        };
+    }, [
+        handleReceivedOffer,
+        handleRoomJoined,
+        initiateCall,
+        roomName,
+        onPeerLeave,
+        handleAnswer,
+        handlerNewIceCandidateMsg,
+    ]);
 
-        // Emitted when a peer leaves the room
-        socketRef.current.on('leave', onPeerLeave);
-
-        // If the room is full, we show an alert
-        socketRef.current.on('full', () => {
-            window.location.href = '/';
-        });
-
-        // Event called when a remote user initiating the connection and
-        socketRef.current.on('offer', handleReceivedOffer);
-        socketRef.current.on('answer', handleAnswer);
-        socketRef.current.on('ice-candidate', handlerNewIceCandidateMsg);
-
-        // clear up after
-        return () => socketRef.current.disconnect();
-    }, [handleReceivedOffer, handleRoomJoined, initiateCall, roomName]);
     return (
         <div>
             {isLoading ? <div>로딩 중 ....</div> : null}
-            <video autoPlay ref={userVideoRef} muted playsInline />
-            <video autoPlay ref={peerVideoRef} playsInline />
+            <Video autoPlay ref={userVideoRef} muted playsInline />
+            <Video autoPlay ref={peerVideoRef} playsInline />
             <button onClick={toggleMic} type="button">
                 {micActive ? 'Mute Mic' : 'UnMute Mic'}
             </button>

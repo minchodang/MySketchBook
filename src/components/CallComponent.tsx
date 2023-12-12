@@ -1,6 +1,6 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import SendBirdCall from 'sendbird-calls';
 
 interface MediaType {
@@ -28,18 +28,16 @@ const CallComponent = () => {
         return devices.filter((device) => device.kind === type);
     };
 
-    const openMediaDevices = async ({ video, audio }: { video: boolean; audio: boolean }) => {
-        return await navigator.mediaDevices.getUserMedia({ audio, video });
-    };
-
-    const onClickBtn = useCallback(async () => {
+    const onClickBtn = useCallback(() => {
         router.push(`/room/1`);
     }, [router]);
 
     return (
         <Container>
             <div>
-                <button onClick={onClickBtn}>화상 셋팅하기</button>
+                <button onClick={onClickBtn} type="button">
+                    화상 셋팅하기
+                </button>
             </div>
         </Container>
     );
