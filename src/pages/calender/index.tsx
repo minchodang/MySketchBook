@@ -1,11 +1,16 @@
 import styled from '@emotion/styled';
 import useCalender from '@/hooks/useCalender';
 
-const weeks = ['월', '화', '수', '목', '금', '토', '일'];
-
 const Container = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+const CalenderTitle = styled.section`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
 `;
 
 const CalenderContainer = styled.div`
@@ -15,13 +20,10 @@ const CalenderContainer = styled.div`
     border: 1px solid black;
     box-sizing: border-box;
     padding: 10px;
-    max-width: 1000px;
-    min-width: 600px;
-    max-height: 1000px;
-    min-height: 1000px;
+    width: calc(100vw - 15px);
 `;
 
-const DateHeaed = styled.div`
+const DateHead = styled.div`
     background-color: lightsalmon;
     text-align: center;
     color: white;
@@ -40,24 +42,38 @@ const DateDiv = styled.div`
     height: 50px;
 `;
 const CalenderPage = () => {
-    const { dates, daysInMonth, firstDayOfMonth, today } = useCalender();
-
-    const emptyDays = new Array(firstDayOfMonth.day()).fill(null);
+    const { dates, today, changeMonth, weeks } = useCalender();
 
     return (
         <Container>
-            <div>
-                <h1>{today.format('YYYY-MM-DD')}</h1>
+            <CalenderTitle>
+                <button
+                    type="button"
+                    onClick={() => {
+                        changeMonth('prev');
+                    }}
+                >
+                    {'<'}
+                </button>
                 <h1>{today.format('MMMM')}</h1>
-                <h3>{daysInMonth}일</h3>
-            </div>
+                <button
+                    type="button"
+                    onClick={() => {
+                        changeMonth('next');
+                    }}
+                >
+                    {'>'}
+                </button>
+            </CalenderTitle>
             <CalenderContainer>
                 {weeks.map((value) => (
-                    <DateHeaed>{value}</DateHeaed>
+                    <DateHead key={value}>{value}</DateHead>
                 ))}
 
-                {emptyDays.concat(dates).map((date, index) => (
-                    <DateDiv key={date}>{date ? date.format('DD') : ''}</DateDiv>
+                {dates.map((date, index) => (
+                    <DateDiv key={date ? date.toISOString() : `empty-${index}`}>
+                        {date ? date.format('DD') : ''}
+                    </DateDiv>
                 ))}
             </CalenderContainer>
         </Container>
