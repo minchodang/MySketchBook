@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "lib": ["dom", "dom.iterable", "esnext"],
+        "checkJs": false,
         "allowJs": true,
         "skipLibCheck": true,
         "strict": true,
@@ -13,8 +14,8 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "jsx": "preserve",
-        "noImplicitAny": true,
         "incremental": true,
+        "baseUrl": "./",
         "plugins": [
             {
                 "name": "next"
@@ -30,8 +31,8 @@
         "src/types/**/*.d.ts",
         "**/*.ts",
         "**/*.tsx",
-        "**/*.js",
-        "**/*.jsx"
+        "pages/**/*.tsx",
+        "src/pages/api/socket.js"
     ],
     "exclude": ["node_modules"]
 }

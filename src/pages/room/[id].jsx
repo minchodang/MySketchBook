@@ -37,6 +37,7 @@ const Room = () => {
         socketRef.current.on('leave', onPeerLeave);
 
         socketRef.current.on('full', () => {
+            // eslint-disable-next-line no-undef
             window.location.href = '/';
         });
 
@@ -216,9 +217,9 @@ const Room = () => {
             rtcConnectionRef.current.ontrack = null;
             rtcConnectionRef.current.onicecandidate = null;
             rtcConnectionRef.current.close();
-            // rtcConnectionRef.current = null;
+            rtcConnectionRef.current = null;
         }
-        // router.push('/');
+        router.push('/');
     };
 
     return (

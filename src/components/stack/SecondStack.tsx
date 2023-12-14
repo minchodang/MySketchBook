@@ -1,7 +1,7 @@
-import { useFlow } from '@/utils/stackflow';
 import styled from '@emotion/styled';
 import { AppScreen } from '@stackflow/plugin-basic-ui';
 import { ActivityComponentType } from '@stackflow/react';
+import { useFlow } from '@/utils/stackflow';
 
 type Params = {
     title: string;
@@ -20,7 +20,7 @@ const SecondStack: ActivityComponentType<Params> = ({ params }) => {
     return (
         <AppScreen>
             <Container>
-                <h1 onClick={onClick}>{params.title}</h1>
+                <div onClick={onClick}>{params.title}</div>
             </Container>
         </AppScreen>
     );

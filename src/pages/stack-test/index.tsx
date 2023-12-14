@@ -1,7 +1,7 @@
-import { useFlow } from '@/utils/stackflow';
 import styled from '@emotion/styled';
 import { AppScreen } from '@stackflow/plugin-basic-ui';
 import { ActivityComponentType } from '@stackflow/react';
+import { useFlow } from '@/utils/stackflow';
 
 const Container = styled.div`
     display: flex;
