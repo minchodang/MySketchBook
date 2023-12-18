@@ -5,7 +5,7 @@ const nextConfig = {
         unsplash_secret_key: process.env.unsplash_secret_key,
     },
     images: {
-        domains: ['images.unsplash.com'],
+        remotePatterns: [{ hostname: 'images.unsplash.com' }],
         minimumCacheTTL: 60,
     },
     rewrites: () => {

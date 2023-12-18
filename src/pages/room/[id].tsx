@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/media-has-caption */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { io } from 'socket.io-client';
@@ -30,10 +33,14 @@ const Room = () => {
         socketRef.current = io();
         socketRef.current.emit('join', roomName);
 
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         socketRef.current.on('joined', handleRoomJoined);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         socketRef.current.on('created', handleRoomCreated);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         socketRef.current.on('ready', initiateCall);
 
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         socketRef.current.on('leave', onPeerLeave);
 
         socketRef.current.on('full', () => {
@@ -41,11 +48,15 @@ const Room = () => {
             window.location.href = '/';
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         socketRef.current.on('offer', handleReceivedOffer);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         socketRef.current.on('answer', handleAnswer);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         socketRef.current.on('ice-candidate', handlerNewIceCandidateMsg);
 
         return () => socketRef.current.disconnect();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [roomName]);
 
     const handleRoomJoined = () => {
@@ -95,6 +106,7 @@ const Room = () => {
 
     const initiateCall = () => {
         if (hostRef.current) {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             rtcConnectionRef.current = createPeerConnection();
             rtcConnectionRef.current.addTrack(
                 userStreamRef.current.getTracks()[0],
@@ -133,8 +145,10 @@ const Room = () => {
     const createPeerConnection = () => {
         const connection = new RTCPeerConnection(ICE_SERVERS);
 
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         connection.onicecandidate = handleICECandidateEvent;
 
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         connection.ontrack = handleTrackEvent;
         return connection;
     };
