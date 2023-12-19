@@ -12,10 +12,10 @@ export const ImageComponent = ({ data }: ImageComponentProps) => (
             src={data.urls.raw || ''}
             height={400}
             width={400}
-            layout="responsive"
-            placeholder="blur"
+            style={{
+                objectFit: 'cover',
+            }}
             alt={data.description}
-            blurDataURL={data.urls.small}
         />
     </div>
 );
