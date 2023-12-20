@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { Stack } from '@/utils/stackflow';
 
 const App = ({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedState }>) => {
     const [queryClient] = useState(() => new QueryClient());
@@ -18,7 +19,8 @@ const App = ({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedSta
             </Head>
             <QueryClientProvider client={queryClient}>
                 <HydrationBoundary state={pageProps.dehydratedState}>
-                    <Component {...pageProps} />
+                    <Stack />
+                    {/* <Component {...pageProps} /> */}
                 </HydrationBoundary>
             </QueryClientProvider>
         </>

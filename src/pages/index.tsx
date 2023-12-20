@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import QueryKeys from '../../lib/hooks/Querykey';
 import { fetchPictures, useGetPicturesQuery } from '../../lib/hooks/useGetPicturesQuery';
+import MyActivity from '@/components/stack/MyAcitivity';
 
 const Container = styled.div`
     display: flex;
@@ -16,7 +17,7 @@ const IndexPage = () => {
     const router = useRouter();
     return (
         <Container>
-            {(data || []).map((value) => (
+            {/* {(data || []).map((value) => (
                 <div
                     key={value.id}
                     onClick={() => {
@@ -34,7 +35,8 @@ const IndexPage = () => {
                         blurDataURL={value.urls.regular}
                     />
                 </div>
-            ))}
+            ))} */}
+            {/* <MyActivity params="sss" /> */}
         </Container>
     );
 };
