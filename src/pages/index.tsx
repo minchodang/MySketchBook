@@ -29,10 +29,10 @@ const IndexPage = () => {
                         src={value.urls.regular}
                         height={400}
                         width={400}
-                        layout="responsive"
-                        placeholder="blur"
                         alt={value.description}
-                        blurDataURL={value.urls.regular}
+                        style={{
+                            objectFit: 'cover',
+                        }}
                     />
                 </div>
             ))} */}
@@ -45,9 +45,7 @@ export async function getServerSideProps() {
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery({
         queryKey: [QueryKeys.pictures],
-        queryFn: () => {
-            fetchPictures({ page: 1, limit: 2 });
-        },
+        queryFn: () => fetchPictures({ page: 1, limit: 2 }),
     });
 
     return {

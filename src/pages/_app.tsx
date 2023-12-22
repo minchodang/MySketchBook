@@ -5,12 +5,23 @@ import {
     QueryClient,
     QueryClientProvider,
 } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Stack } from '@/utils/stackflow';
 
 const App = ({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedState }>) => {
-    const [queryClient] = useState(() => new QueryClient());
+    const [queryClient] = useState(
+        () =>
+            new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        retry: false,
+                        staleTime: 60 * 3 * 1000,
+                    },
+                },
+            }),
+    );
 
     return (
         <>
@@ -20,7 +31,7 @@ const App = ({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedSta
             <QueryClientProvider client={queryClient}>
                 <HydrationBoundary state={pageProps.dehydratedState}>
                     <Stack />
-                    {/* <Component {...pageProps} /> */}
+                    <ReactQueryDevtools buttonPosition="bottom-left" />
                 </HydrationBoundary>
             </QueryClientProvider>
         </>

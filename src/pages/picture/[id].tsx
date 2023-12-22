@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { QueryClient, dehydrate, useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import QueryKeys from '../../../lib/hooks/Querykey';
@@ -25,10 +25,10 @@ const DetailPage = () => {
                         src={data?.urls.raw || ''}
                         height={400}
                         width={400}
-                        layout="responsive"
-                        placeholder="blur"
                         alt={data?.description}
-                        blurDataURL={data?.urls.small}
+                        style={{
+                            objectFit: 'cover',
+                        }}
                     />
                 </div>
             ) : null}
@@ -42,9 +42,7 @@ export async function getServerSideProps(context: { query: { id: string } }) {
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery({
         queryKey: [QueryKeys.picture],
-        queryFn: () => {
-            fetchPicture({ id });
-        },
+        queryFn: () => fetchPicture({ id }),
     });
 
     return {
