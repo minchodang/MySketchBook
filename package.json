@@ -13,6 +13,7 @@
     "dependencies": {
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
+        "@radix-ui/react-dialog": "^1.0.5",
         "@stackflow/core": "^1.0.8",
         "@stackflow/plugin-basic-ui": "^1.4.1",
         "@stackflow/plugin-renderer-basic": "^1.1.5",

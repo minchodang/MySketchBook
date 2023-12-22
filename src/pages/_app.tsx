@@ -30,7 +30,7 @@ const App = ({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedSta
             </Head>
             <QueryClientProvider client={queryClient}>
                 <HydrationBoundary state={pageProps.dehydratedState}>
-                    <Stack />
+                    <Component {...pageProps} />
                     <ReactQueryDevtools buttonPosition="bottom-left" />
                 </HydrationBoundary>
             </QueryClientProvider>
