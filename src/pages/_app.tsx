@@ -8,7 +8,6 @@ import {
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Stack } from '@/utils/stackflow';
 
 const App = ({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedState }>) => {
     const [queryClient] = useState(
