@@ -1,16 +1,24 @@
-import { useStore } from '@/hooks/useStore';
-import { counterStore } from '@/pages/store-test';
+import { useCallback, useEffect } from 'react';
+import { useStoreSelector } from '@/hooks/useStoreSelector';
+import { selectorStore } from '@/pages/store-test';
 
 export const Counter1 = () => {
-    const [state, setState] = useStore(counterStore);
+    const counter = useStoreSelector(
+        selectorStore,
+        useCallback((state) => state.count, []),
+    );
 
     const handleClick = () => {
-        setState((prev) => ({ count: prev.count + 1 }));
+        selectorStore.set((prev) => ({ ...prev, count: prev.count + 1 }));
     };
+
+    useEffect(() => {
+        console.log('Counter Rendered');
+    });
 
     return (
         <>
-            <h3>Counter1: {state.count}</h3>
+            <h3>{counter}</h3>
             <button type="button" onClick={handleClick}>
                 +
             </button>
