@@ -9,11 +9,16 @@
 - radix ui, component component pattern.
 - web rtc
 - memory leak 관련.
+- zod 기본.
+- socket 통신
+- 커스텀 calender 뷰 및 useCalender 훅스.
+- husky lint 셋팅. 
 
 ## 2) 학습 예정 목록
 - 바닐라 스토어 추가(useSelector 등)
 - mono-repo 기반한 마이크로 서비스 아키텍처 등.
-
+- zod 심화.
+  
 추가적인 부분은 계속 업데이트 될 예정입니다. 
 
 감사합니다. 
