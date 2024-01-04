@@ -1,5 +1,5 @@
-import Column from '@/components/dnd/Column';
+import SortableIndx from '@/components/dnd/SortableIndex';
 
-const DndPage = () => <Column />;
+const DndPage = () => <SortableIndx />;
 
 export default DndPage;
