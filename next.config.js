@@ -8,14 +8,14 @@ const nextConfig = {
         remotePatterns: [{ hostname: 'images.unsplash.com' }],
         minimumCacheTTL: 60,
     },
-    // rewrites: () => {
-    //     return [
-    //         {
-    //             source: '/photo/:path*',
-    //             destination: 'https://api.unsplash.com/:path*',
-    //         },
-    //     ];
-    // },
+    rewrites: () => {
+        return [
+            {
+                source: '/photo/:path*',
+                destination: 'https://api.unsplash.com/:path*',
+            },
+        ];
+    },
 };
 
 module.exports = nextConfig;
